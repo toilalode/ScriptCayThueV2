@@ -127,7 +127,7 @@ getgenv().Key = "ede8802c507fc1533c8b3266"
         },
         ["Lock Fruit"] = {},
         ["Webhook"] = {
-            ["Enabled"] = tre,
+            ["Enabled"] = true,
             ["WebhookUrl"] = "",
         }
     }
@@ -137,7 +137,8 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitin
   
   AddButton(Tab9o, {
      Name = "67 Hub",
-    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/67HubDev/all/refs/heads/main/67hub.vn.lua"))()
+    Callback = function()
+	  loadstring(game:HttpGet("https://raw.githubusercontent.com/67HubDev/all/refs/heads/main/67hub.vn.lua"))()
   end
   })
   
@@ -150,7 +151,8 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/
   
   AddButton(Tab7o, {
      Name = "Onion Pvp",
-    Callback = function()	loadstring(game:HttpGet("https://raw.githubusercontent.com/onion132005-bit/esponion.lua/refs/heads/main/onion13v9.lua", true))()
+    Callback = function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/onion132005-bit/esponion.lua/refs/heads/main/onion13v9.lua", true))()
   end
   })
   
@@ -337,7 +339,7 @@ getgenv().Key = "ede8802c507fc1533c8b3266"
             ["Enabled"] = true,
             ["Low Health"] = 4000,
         },
-        ["Use Portal Teleport"] = fatrue,
+        ["Use Portal Teleport"] = false,
         ["Target Time"] = 20,
         ["Aim Prediction"] = 0.5,
         ["Select Region"] = {["Enabled"] = false,["Region"] = {["Singapore"] = true,["United States"] = false,["Netherlands"] = false,["Germany"] =false,["India"] = false,["Australia"] = false}},
@@ -498,7 +500,7 @@ getgenv().SettingFarm ={
     },
     ["Sniper Fruit Shop"] = {
         ["Enabled"] = true,
-        ["Fruit"] = {"Leopard-Leopard","Kitsune-Kitsune","Dragon-Dragon","Yeti-Yeti","Gas-Gas","Trex-Trex",,"Buddha-Buddha","Lightning-Lightning"},
+        ["Fruit"] = {"Leopard-Leopard","Kitsune-Kitsune","Dragon-Dragon","Yeti-Yeti","Gas-Gas","Trex-Trex","Buddha-Buddha","Lightning-Lightning"},
     },
     ["Webhook"] = {
         ["Enabled"] = false,
@@ -509,5 +511,3 @@ getgenv().Mode = "Kaitun"
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()
   end
   })
-
-
