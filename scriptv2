@@ -1,21 +1,3 @@
---[[
-╭────────────────────────────────────────────────────────────╮
-│ 🐉 Script Cày Thuê V2 UI - Script made by Toilalode    
-├──────────────────────────────────────────────────────────┤
-│ Features:                                                 │
-│ 🎨 5 Themes (Dark, Light, Purple, Blue, Sunset)         │
-│ 🌈 Rainbow Mode (FPS, Water Walk, Lava Walk, Brightness) │
-│ 📱 Optimized for Mobile                                   │
-│ 🎬 Smooth Animations                                      │
-│ 💾 Auto Save Config                                       │
-│ 🔍 Search Script Feature                                  │
-│ 🪟 Draggable Window                                       │
-│ 📊 Real-time FPS, Ping, Game Info                         │
-│ 🔔 Notifications                                          │
-│ ℹ️ Info Tab - Hiển thị Ping, FPS, Game, Executor, etc    │
-╰────────────────────────────────────────────────────────────╯
-]]
-
 local CayThueUI = {}
 CayThueUI.Version = "1.0"
 CayThueUI.Minimized = false
@@ -124,7 +106,7 @@ function CayThueUI:CreateUI()
     
     -- Create Main ScreenGui
     self.ScreenGui = Instance.new("ScreenGui")
-    self.ScreenGui.Name = "CayThueUIV3"
+    self.ScreenGui.Name = "CayThueUIV2"
     self.ScreenGui.ResetOnSpawn = false
     self.ScreenGui.DisplayOrder = 999
     self.ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
