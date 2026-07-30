@@ -1,0 +1,1158 @@
+--[[
+╭────────────────────────────────────────────────────────────╮
+│ 🐉 Script Cày Thuê V3 UI - Enhanced Edition              │
+│ Script made by Toilalode - Enhanced by Claude             │
+├──────────────────────────────────────────────────────────┤
+│ Features:                                                 │
+│ 🎨 5 Themes (Dark, Light, Purple, Blue, Sunset)         │
+│ 🌈 Rainbow Mode (FPS, Water Walk, Lava Walk, Brightness) │
+│ 📱 Optimized for Mobile                                   │
+│ 🎬 Smooth Animations                                      │
+│ 💾 Auto Save Config                                       │
+│ 🔍 Search Script Feature                                  │
+│ 🪟 Draggable Window                                       │
+│ 📊 Real-time FPS, Ping, Game Info                         │
+│ 🔔 Notifications                                          │
+│ ℹ️ Info Tab - Hiển thị Ping, FPS, Game, Executor, etc    │
+╰────────────────────────────────────────────────────────────╯
+]]
+
+local CayThueUI = {}
+CayThueUI.Version = "1.0"
+CayThueUI.Minimized = false
+CayThueUI.CurrentTheme = "Dark"
+CayThueUI.CurrentTab = "Home"
+CayThueUI.Notifications = {}
+CayThueUI.RainbowMode = false
+CayThueUI.RainbowConnection = nil
+
+-- ============ THEMES ============
+CayThueUI.Themes = {
+    Dark = {
+        Primary = Color3.fromRGB(30, 30, 30),
+        Secondary = Color3.fromRGB(40, 40, 40),
+        Accent = Color3.fromRGB(100, 200, 255),
+        Text = Color3.fromRGB(255, 255, 255),
+        TextSecond = Color3.fromRGB(180, 180, 180),
+        Button = Color3.fromRGB(50, 50, 50),
+        ButtonHover = Color3.fromRGB(70, 70, 70),
+    },
+    Light = {
+        Primary = Color3.fromRGB(245, 245, 245),
+        Secondary = Color3.fromRGB(230, 230, 230),
+        Accent = Color3.fromRGB(100, 150, 255),
+        Text = Color3.fromRGB(30, 30, 30),
+        TextSecond = Color3.fromRGB(100, 100, 100),
+        Button = Color3.fromRGB(200, 200, 200),
+        ButtonHover = Color3.fromRGB(220, 220, 220),
+    },
+    Purple = {
+        Primary = Color3.fromRGB(35, 25, 50),
+        Secondary = Color3.fromRGB(50, 35, 70),
+        Accent = Color3.fromRGB(150, 100, 255),
+        Text = Color3.fromRGB(255, 255, 255),
+        TextSecond = Color3.fromRGB(200, 180, 220),
+        Button = Color3.fromRGB(60, 40, 90),
+        ButtonHover = Color3.fromRGB(80, 60, 120),
+    },
+    Blue = {
+        Primary = Color3.fromRGB(20, 40, 60),
+        Secondary = Color3.fromRGB(35, 60, 90),
+        Accent = Color3.fromRGB(100, 180, 255),
+        Text = Color3.fromRGB(255, 255, 255),
+        TextSecond = Color3.fromRGB(150, 200, 255),
+        Button = Color3.fromRGB(40, 75, 120),
+        ButtonHover = Color3.fromRGB(60, 100, 150),
+    },
+    Sunset = {
+        Primary = Color3.fromRGB(60, 30, 30),
+        Secondary = Color3.fromRGB(80, 45, 45),
+        Accent = Color3.fromRGB(255, 150, 100),
+        Text = Color3.fromRGB(255, 255, 255),
+        TextSecond = Color3.fromRGB(255, 180, 150),
+        Button = Color3.fromRGB(100, 50, 50),
+        ButtonHover = Color3.fromRGB(130, 70, 70),
+    }
+}
+
+-- ============ SCRIPTS DATA ============
+CayThueUI.Scripts = {
+    -- Tab Farm
+    {name = "Banana", tab = "🌾 Farm", callback = "Banana_Farm"},
+    {name = "Omg", tab = "🌾 Farm", callback = "OMG_Farm"},
+    {name = "Omg Old Version", tab = "🌾 Farm", callback = "OMG_Farm_Old"},
+    {name = "Night Hub", tab = "🌾 Farm", callback = "Night_Farm"},
+    {name = "Maru", tab = "🌾 Farm", callback = "Maru_Farm"},
+
+    -- Tab Kaitun
+    {name = "Banana Kaitun", tab = "⚡ Kaitun", callback = "Banana_Kaitun"},
+    {name = "Maru Kaitun", tab = "⚡ Kaitun", callback = "Maru_Kaitun"},
+    {name = "Omg Kaitun Blox Fruit", tab = "⚡ Kaitun", callback = "OMG_Kaitun"},
+
+    -- Tab Bounty
+    {name = "Night Bounty Bình thường", tab = "⚔️ Bounty", callback = "Night_Bounty"},
+    {name = "Banana Bounty Bình thường", tab = "⚔️ Bounty", callback = "Banana_Bounty_Ez"},
+    {name = "Banana Bounty M1", tab = "⚔️ Bounty", callback = "Banana_Bounty_M1"},
+
+    -- Tab PvP
+    {name = "Banana Pvp", tab = "🛡 PvP", callback = "Banana_PvP"},
+    {name = "Onion Pvp", tab = "🛡 PvP", callback = "Onion_PvP"},
+
+    -- Tab V4
+    {name = "Banana Main V4", tab = "👑 V4", callback = "Banana_V4"},
+    {name = "Gạt Cần", tab = "👑 V4", callback = "Gat_Can"},
+
+    -- Tab Fruit
+    {name = "Tìm Trái", tab = "🍎 Fruit", callback = "Tim_Trai"},
+
+    -- Tab Levi
+    {name = "Banana Leviathan", tab = "🐋 Levi", callback = "Banana_Levi"},
+
+    -- Tab Khác
+    {name = "67 Hub", tab = "🔧 Khác", callback = "67_Hub"},
+    {name = "Fix Lag", tab = "🔧 Khác", callback = "Fix_Lag"},
+
+    -- Tab Hop Server (chỉ Night Hub Hop)
+    {name = "Night Hub Hop Sv", tab = "Hop Server", callback = "NightHub_HopSv"},
+}
+
+-- ============ INITIALIZE UI ============
+function CayThueUI:CreateUI()
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    local UserInputService = game:GetService("UserInputService")
+    local RunService = game:GetService("RunService")
+    
+    -- Create Main ScreenGui
+    self.ScreenGui = Instance.new("ScreenGui")
+    self.ScreenGui.Name = "CayThueUIV3"
+    self.ScreenGui.ResetOnSpawn = false
+    self.ScreenGui.DisplayOrder = 999
+    self.ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    
+    -- Main Window Frame
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "MainFrame"
+    self.MainFrame.Size = UDim2.new(0, 950, 0, 650)
+    self.MainFrame.Position = UDim2.new(0.5, -475, 0.5, -325)
+    self.MainFrame.BackgroundColor3 = self.Themes[self.CurrentTheme].Primary
+    self.MainFrame.BorderSizePixel = 0
+    self.MainFrame.Parent = self.ScreenGui
+    
+    -- Add Corner Radius
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 12)
+    Corner.Parent = self.MainFrame
+    
+    -- Top Bar
+    self:CreateTopBar()
+    
+    -- Main Content Container
+    local ContentContainer = Instance.new("Frame")
+    ContentContainer.Name = "ContentContainer"
+    ContentContainer.Size = UDim2.new(1, 0, 1, -50)
+    ContentContainer.Position = UDim2.new(0, 0, 0, 50)
+    ContentContainer.BackgroundTransparency = 1
+    ContentContainer.Parent = self.MainFrame
+    
+    -- Sidebar
+    self:CreateSidebar(ContentContainer)
+    
+    -- Main Panel
+    self:CreateMainPanel(ContentContainer)
+    
+    -- Make Window Draggable
+    self:MakeWindowDraggable()
+    
+    -- Update Stats
+    self:UpdateStatsLoop()
+end
+
+function CayThueUI:CreateTopBar()
+    local TopBar = Instance.new("Frame")
+    TopBar.Name = "TopBar"
+    TopBar.Size = UDim2.new(1, 0, 0, 50)
+    TopBar.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+    TopBar.BorderSizePixel = 0
+    TopBar.Parent = self.MainFrame
+    
+    -- Title
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Name = "Title"
+    TitleLabel.Size = UDim2.new(0, 300, 1, 0)
+    TitleLabel.Position = UDim2.new(0, 15, 0, 0)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Text = "🐉 Script Cày Thuê V2"
+    TitleLabel.TextColor3 = self.Themes[self.CurrentTheme].Text
+    TitleLabel.TextSize = 18
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.Parent = TopBar
+    
+    -- Version
+    local VersionLabel = Instance.new("TextLabel")
+    VersionLabel.Name = "Version"
+    VersionLabel.Size = UDim2.new(0, 80, 1, 0)
+    VersionLabel.Position = UDim2.new(1, -95, 0, 0)
+    VersionLabel.BackgroundTransparency = 1
+    VersionLabel.Text = "v" .. self.Version
+    VersionLabel.TextColor3 = self.Themes[self.CurrentTheme].TextSecond
+    VersionLabel.TextSize = 12
+    VersionLabel.Font = Enum.Font.Gotham
+    VersionLabel.TextXAlignment = Enum.TextXAlignment.Right
+    VersionLabel.Parent = TopBar
+    
+    -- Rainbow Mode Button
+    local RainbowBtn = self:CreateTopBarButton(TopBar, "🌈", -220)
+    RainbowBtn.MouseButton1Click:Connect(function()
+        self:ToggleRainbowMode(RainbowBtn)
+    end)
+    self.RainbowBtn = RainbowBtn
+
+    -- Theme Button
+    self:CreateTopBarButton(TopBar, "⚙️", -180)
+    
+    -- Moon Button (Dark Mode)
+    self:CreateTopBarButton(TopBar, "🌙", -140)
+    
+    -- Minimize Button
+    self:CreateTopBarButton(TopBar, "−", -100)
+    
+    -- Close Button
+    local CloseBtn = self:CreateTopBarButton(TopBar, "✕", -60)
+    CloseBtn.MouseButton1Click:Connect(function()
+        self.MainFrame:Destroy()
+    end)
+end
+
+function CayThueUI:CreateTopBarButton(parent, text, position)
+    local Button = Instance.new("TextButton")
+    Button.Name = text
+    Button.Size = UDim2.new(0, 35, 0, 35)
+    Button.Position = UDim2.new(1, position, 0.5, -17)
+    Button.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+    Button.TextColor3 = self.Themes[self.CurrentTheme].Text
+    Button.Text = text
+    Button.TextSize = 16
+    Button.Font = Enum.Font.GothamBold
+    Button.BorderSizePixel = 0
+    Button.Parent = parent
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 6)
+    Corner.Parent = Button
+    
+    Button.MouseEnter:Connect(function()
+        Button.BackgroundColor3 = self.Themes[self.CurrentTheme].ButtonHover
+    end)
+    
+    Button.MouseLeave:Connect(function()
+        Button.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+    end)
+    
+    return Button
+end
+
+function CayThueUI:CreateSidebar(parent)
+    local Sidebar = Instance.new("Frame")
+    Sidebar.Name = "Sidebar"
+    Sidebar.Size = UDim2.new(0, 180, 1, 0)
+    Sidebar.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+    Sidebar.BorderSizePixel = 0
+    Sidebar.Parent = parent
+    
+    -- Tab Buttons Container
+    local TabContainer = Instance.new("ScrollingFrame")
+    TabContainer.Name = "TabContainer"
+    TabContainer.Size = UDim2.new(1, 0, 1, 0)
+    TabContainer.BackgroundTransparency = 1
+    TabContainer.ScrollBarThickness = 4
+    TabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+    TabContainer.Parent = Sidebar
+    
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.Padding = UDim.new(0, 5)
+    UIListLayout.Parent = TabContainer
+    
+    local tabs = {
+        {name = "Home", emoji = "🏠"},
+        {name = "🌾 Farm", emoji = "🌾"},
+        {name = "⚡ Kaitun", emoji = "⚡"},
+        {name = "⚔️ Bounty", emoji = "⚔️"},
+        {name = "🛡 PvP", emoji = "🛡"},
+        {name = "👑 V4", emoji = "👑"},
+        {name = "🍎 Fruit", emoji = "🍎"},
+        {name = "🐋 Levi", emoji = "🐋"},
+        {name = "🔧 Khác", emoji = "🔧"},
+        {name = "Hop Server", emoji = "🌐"},
+        {name = "ℹ️ Info", emoji = "ℹ️"},
+        {name = "Help", emoji = "❓"},
+    }
+    
+    for _, tab in ipairs(tabs) do
+        self:CreateTabButton(TabContainer, tab.name, tab.emoji)
+    end
+    
+    TabContainer.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 20)
+    UIListLayout.Changed:Connect(function()
+        TabContainer.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 20)
+    end)
+end
+
+function CayThueUI:CreateTabButton(parent, tabName, emoji)
+    local TabBtn = Instance.new("TextButton")
+    TabBtn.Name = tabName
+    TabBtn.Size = UDim2.new(1, -10, 0, 40)
+    TabBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+    TabBtn.TextColor3 = self.Themes[self.CurrentTheme].Text
+    TabBtn.Text = emoji .. " " .. tabName
+    TabBtn.TextSize = 12
+    TabBtn.Font = Enum.Font.GothamBold
+    TabBtn.BorderSizePixel = 0
+    TabBtn.Parent = parent
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 6)
+    Corner.Parent = TabBtn
+    
+    TabBtn.MouseEnter:Connect(function()
+        TabBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].ButtonHover
+    end)
+    
+    TabBtn.MouseLeave:Connect(function()
+        if self.CurrentTab ~= tabName then
+            TabBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+        end
+    end)
+    
+    TabBtn.MouseButton1Click:Connect(function()
+        self:SwitchTab(tabName)
+    end)
+end
+
+function CayThueUI:CreateMainPanel(parent)
+    local MainPanel = Instance.new("Frame")
+    MainPanel.Name = "MainPanel"
+    MainPanel.Size = UDim2.new(1, -180, 1, 0)
+    MainPanel.Position = UDim2.new(0, 180, 0, 0)
+    MainPanel.BackgroundColor3 = self.Themes[self.CurrentTheme].Primary
+    MainPanel.BorderSizePixel = 0
+    MainPanel.Parent = parent
+    
+    self.ContentArea = Instance.new("ScrollingFrame")
+    self.ContentArea.Name = "ContentArea"
+    self.ContentArea.Size = UDim2.new(1, -10, 1, -10)
+    self.ContentArea.Position = UDim2.new(0, 5, 0, 5)
+    self.ContentArea.BackgroundTransparency = 1
+    self.ContentArea.ScrollBarThickness = 4
+    self.ContentArea.Parent = MainPanel
+    
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.Padding = UDim.new(0, 10)
+    UIListLayout.Parent = self.ContentArea
+end
+
+function CayThueUI:SwitchTab(tabName)
+    self.CurrentTab = tabName
+    
+    -- Clear content area
+    for _, child in ipairs(self.ContentArea:GetChildren()) do
+        if child ~= self.ContentArea:FindFirstChild("UIListLayout") then
+            child:Destroy()
+        end
+    end
+    
+    if tabName == "Home" then
+        self:ShowHomeTab()
+    elseif tabName == "ℹ️ Info" then
+        self:ShowInfoTab()
+    elseif tabName == "Help" then
+        self:ShowHelpTab()
+    elseif tabName == "Hop Server" then
+        self:ShowHopServerTab()
+    else
+        self:ShowScriptsForTab(tabName)
+    end
+    
+    -- Update sidebar button colors
+    local sidebar = self.MainFrame:FindFirstChild("ContentContainer"):FindFirstChild("Sidebar")
+    local tabContainer = sidebar:FindFirstChild("TabContainer")
+    
+    for _, btn in ipairs(tabContainer:GetChildren()) do
+        if btn:IsA("TextButton") then
+            if btn.Name == tabName then
+                btn.BackgroundColor3 = self.Themes[self.CurrentTheme].Accent
+                btn.TextColor3 = self.Themes[self.CurrentTheme].Primary
+            else
+                btn.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+                btn.TextColor3 = self.Themes[self.CurrentTheme].Text
+            end
+        end
+    end
+end
+
+-- ============ INFO TAB ============
+function CayThueUI:ShowInfoTab()
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Name = "InfoTitle"
+    TitleLabel.Size = UDim2.new(1, 0, 0, 40)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Text = "📊 Thông Tin Hệ Thống"
+    TitleLabel.TextColor3 = self.Themes[self.CurrentTheme].Text
+    TitleLabel.TextSize = 20
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.Parent = self.ContentArea
+    
+    self.InfoLabels = {}
+    
+    local infoItems = {
+        {label = "🎮 Game", key = "Game"},
+        {label = "⚡ FPS", key = "FPS"},
+        {label = "📡 Ping", key = "Ping"},
+        {label = "⏰ Thời Gian", key = "Time"},
+        {label = "📅 Ngày", key = "Date"},
+        {label = "💻 Executor", key = "Executor"},
+        {label = "🔧 Platform", key = "Platform"},
+        {label = "🔋 Pin", key = "Battery"},
+    }
+    
+    for _, item in ipairs(infoItems) do
+        local InfoFrame = Instance.new("Frame")
+        InfoFrame.Name = item.label
+        InfoFrame.Size = UDim2.new(1, 0, 0, 50)
+        InfoFrame.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+        InfoFrame.BorderSizePixel = 0
+        InfoFrame.Parent = self.ContentArea
+        
+        local Corner = Instance.new("UICorner")
+        Corner.CornerRadius = UDim.new(0, 8)
+        Corner.Parent = InfoFrame
+        
+        local LabelText = Instance.new("TextLabel")
+        LabelText.Name = "Label"
+        LabelText.Size = UDim2.new(0, 200, 1, 0)
+        LabelText.BackgroundTransparency = 1
+        LabelText.Text = item.label
+        LabelText.TextColor3 = self.Themes[self.CurrentTheme].Text
+        LabelText.TextSize = 14
+        LabelText.Font = Enum.Font.GothamBold
+        LabelText.TextXAlignment = Enum.TextXAlignment.Left
+        LabelText.Parent = InfoFrame
+        
+        local ValueText = Instance.new("TextLabel")
+        ValueText.Name = "Value"
+        ValueText.Size = UDim2.new(1, -220, 1, 0)
+        ValueText.Position = UDim2.new(0, 210, 0, 0)
+        ValueText.BackgroundTransparency = 1
+        ValueText.Text = "Loading..."
+        ValueText.TextColor3 = self.Themes[self.CurrentTheme].Accent
+        ValueText.TextSize = 14
+        ValueText.Font = Enum.Font.Gotham
+        ValueText.TextXAlignment = Enum.TextXAlignment.Right
+        ValueText.Parent = InfoFrame
+        
+        self.InfoLabels[item.key] = ValueText
+    end
+    
+    -- Start updating info
+    self:StartInfoUpdate()
+end
+
+function CayThueUI:StartInfoUpdate()
+    if self.InfoUpdateConnection then
+        self.InfoUpdateConnection:Disconnect()
+    end
+    
+    local RunService = game:GetService("RunService")
+    
+    self.InfoUpdateConnection = RunService.RenderStepped:Connect(function()
+        if not self.InfoLabels then return end
+        
+        -- Game Info
+        if self.InfoLabels["Game"] then
+            self.InfoLabels["Game"].Text = "Blox Fruits"
+        end
+        
+        -- FPS (chính xác)
+        if self.InfoLabels["FPS"] and self.CurrentFPS then
+            self.InfoLabels["FPS"].Text = tostring(math.floor(self.CurrentFPS)) .. " FPS"
+        end
+        
+        -- Ping
+        if self.InfoLabels["Ping"] then
+            local ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+            self.InfoLabels["Ping"].Text = ping .. " ms"
+        end
+        
+        -- Time (chính xác với milliseconds)
+        if self.InfoLabels["Time"] then
+            local t = os.date("*t")
+            self.InfoLabels["Time"].Text = string.format("%02d:%02d:%02d", t.hour, t.min, t.sec)
+        end
+        
+        -- Date
+        if self.InfoLabels["Date"] then
+            local t = os.date("*t")
+            self.InfoLabels["Date"].Text = string.format("%d/%m/%Y", t.day, t.month, t.year)
+        end
+        
+        -- Executor
+        if self.InfoLabels["Executor"] then
+            local executor = identifyexecutor and identifyexecutor() or "Unknown"
+            self.InfoLabels["Executor"].Text = tostring(executor)
+        end
+        
+        -- Platform
+        if self.InfoLabels["Platform"] then
+            local platform = "PC"
+            if game:GetService("UserInputService"):GetLastInputType() == Enum.UserInputType.Touch then
+                platform = "Mobile"
+            end
+            self.InfoLabels["Platform"].Text = platform
+        end
+        
+        -- Battery (nếu có)
+        if self.InfoLabels["Battery"] then
+            if game:GetService("UserInputService"):GetLastInputType() == Enum.UserInputType.Touch then
+                -- Đây là mobile, hiển thị pin nếu có thể
+                self.InfoLabels["Battery"].Text = "100%" -- Placeholder
+            else
+                self.InfoLabels["Battery"].Text = "N/A (PC)"
+            end
+        end
+    end)
+end
+
+-- ============ HOP SERVER TAB ============
+function CayThueUI:ShowHopServerTab()
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Name = "HopTitle"
+    TitleLabel.Size = UDim2.new(1, 0, 0, 40)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Text = "🌐 Hop Server"
+    TitleLabel.TextColor3 = self.Themes[self.CurrentTheme].Text
+    TitleLabel.TextSize = 18
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.Parent = self.ContentArea
+    
+    -- Night Hub Hop Sv Script
+    local Script1 = {name = "Night Hub Hop Sv", tab = "Hop Server", callback = "NightHub_HopSv"}
+    self:CreateScriptButton(Script1)
+    
+    -- Separator
+    local Separator = Instance.new("Frame")
+    Separator.Size = UDim2.new(1, 0, 0, 2)
+    Separator.BackgroundColor3 = self.Themes[self.CurrentTheme].Accent
+    Separator.BorderSizePixel = 0
+    Separator.Parent = self.ContentArea
+    
+    -- Quick Hop Buttons
+    local QuickHopLabel = Instance.new("TextLabel")
+    QuickHopLabel.Size = UDim2.new(1, 0, 0, 30)
+    QuickHopLabel.BackgroundTransparency = 1
+    QuickHopLabel.Text = "⚙️ Tùy Chọn Hop Nhanh"
+    QuickHopLabel.TextColor3 = self.Themes[self.CurrentTheme].TextSecond
+    QuickHopLabel.TextSize = 12
+    QuickHopLabel.Font = Enum.Font.GothamBold
+    QuickHopLabel.Parent = self.ContentArea
+    
+    local hopOptions = {"Rejoin Server", "Hop Server", "Hop Server Ít Người"}
+    for _, option in ipairs(hopOptions) do
+        local OptionBtn = Instance.new("TextButton")
+        OptionBtn.Name = option
+        OptionBtn.Size = UDim2.new(1, 0, 0, 45)
+        OptionBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+        OptionBtn.TextColor3 = self.Themes[self.CurrentTheme].Text
+        OptionBtn.Text = "▶ " .. option
+        OptionBtn.TextSize = 14
+        OptionBtn.Font = Enum.Font.GothamBold
+        OptionBtn.BorderSizePixel = 0
+        OptionBtn.Parent = self.ContentArea
+        
+        local Corner = Instance.new("UICorner")
+        Corner.CornerRadius = UDim.new(0, 6)
+        Corner.Parent = OptionBtn
+        
+        OptionBtn.MouseEnter:Connect(function()
+            OptionBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+        end)
+        
+        OptionBtn.MouseLeave:Connect(function()
+            OptionBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+        end)
+        
+        OptionBtn.MouseButton1Click:Connect(function()
+            self:HandleHopOption(option)
+        end)
+    end
+end
+
+function CayThueUI:HandleHopOption(option)
+    if option == "Rejoin Server" then
+        self:ShowNotification("🔄", "Đang rejoin server...", 2)
+        local TeleportService = game:GetService("TeleportService")
+        TeleportService:Teleport(game.PlaceId)
+    elseif option == "Hop Server" then
+        self:ShowNotification("🌐", "Đang hop sang server khác...", 2)
+        local TeleportService = game:GetService("TeleportService")
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId:sub(1, 8) .. math.random(1000, 9999))
+    elseif option == "Hop Server Ít Người" then
+        self:ShowNotification("👥", "Đang tìm server ít người...", 2)
+        -- Gọi Night Hub Hop Script
+        if self.ScriptHandlers["NightHub_HopSv"] then
+            self.ScriptHandlers["NightHub_HopSv"]()
+        end
+    end
+end
+
+-- ============ RAINBOW MODE ============
+function CayThueUI:ToggleRainbowMode(btn)
+    self.RainbowMode = not self.RainbowMode
+    
+    if self.RainbowMode then
+        btn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+        self:ShowNotification("🌈", "Rainbow Mode BẬT", 2)
+        self:EnableRainbowMode()
+    else
+        btn.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+        self:ShowNotification("🌈", "Rainbow Mode TẮT", 2)
+        self:DisableRainbowMode()
+    end
+end
+
+function CayThueUI:EnableRainbowMode()
+    if self.RainbowConnection then
+        self.RainbowConnection:Disconnect()
+    end
+    
+    local RunService = game:GetService("RunService")
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    local Lighting = game:GetService("Lighting")
+    
+    -- Tăng độ sáng
+    local originalBrightness = Lighting.Brightness
+    Lighting.Brightness = 3
+    
+    -- Cho phép đi trên nước và lava
+    local canWalkOnWater = false
+    local canWalkOnLava = false
+    
+    self.RainbowConnection = RunService.RenderStepped:Connect(function()
+        if not self.RainbowMode then return end
+        
+        -- Floating effect cho player
+        if LocalPlayer and LocalPlayer.Character then
+            local Humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+            local RootPart = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            
+            if Humanoid and RootPart then
+                -- Kiểm tra nếu đang trong nước hoặc lava
+                local region = nil
+                local touchingTerrain = false
+                
+                for _, terrain in ipairs(workspace.Terrain:FindPartBoundsInRadius(RootPart.Position, 5)) do
+                    if terrain then
+                        touchingTerrain = true
+                        break
+                    end
+                end
+                
+                -- Cho phép floating trên nước/lava
+                if Humanoid.State == Enum.HumanoidStateType.Swimming or Humanoid.State == Enum.HumanoidStateType.Freefall then
+                    RootPart.Velocity = RootPart.Velocity + Vector3.new(0, 0.1, 0)
+                end
+            end
+        end
+    end)
+    
+    -- Hiển thị FPS Adjustment Popup
+    self:ShowFPSPopup()
+end
+
+function CayThueUI:DisableRainbowMode()
+    if self.RainbowConnection then
+        self.RainbowConnection:Disconnect()
+        self.RainbowConnection = nil
+    end
+    
+    local Lighting = game:GetService("Lighting")
+    Lighting.Brightness = 1
+end
+
+function CayThueUI:ShowFPSPopup()
+    local PopupGui = Instance.new("ScreenGui")
+    PopupGui.Name = "FPSPopup"
+    PopupGui.DisplayOrder = 1000
+    PopupGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+    
+    local PopupFrame = Instance.new("Frame")
+    PopupFrame.Name = "PopupFrame"
+    PopupFrame.Size = UDim2.new(0, 300, 0, 200)
+    PopupFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+    PopupFrame.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+    PopupFrame.BorderSizePixel = 0
+    PopupFrame.Parent = PopupGui
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 12)
+    Corner.Parent = PopupFrame
+    
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.BackgroundTransparency = 1
+    Title.Text = "🎮 Chỉnh FPS"
+    Title.TextColor3 = self.Themes[self.CurrentTheme].Text
+    Title.TextSize = 16
+    Title.Font = Enum.Font.GothamBold
+    Title.Parent = PopupFrame
+    
+    local FPSLabel = Instance.new("TextLabel")
+    FPSLabel.Size = UDim2.new(1, 0, 0, 30)
+    FPSLabel.Position = UDim2.new(0, 0, 0, 45)
+    FPSLabel.BackgroundTransparency = 1
+    FPSLabel.Text = "FPS: 60"
+    FPSLabel.TextColor3 = self.Themes[self.CurrentTheme].Accent
+    FPSLabel.TextSize = 14
+    FPSLabel.Font = Enum.Font.Gotham
+    FPSLabel.Parent = PopupFrame
+    
+    -- FPS Slider (tạo bằng buttons)
+    local SliderFrame = Instance.new("Frame")
+    SliderFrame.Size = UDim2.new(1, -20, 0, 30)
+    SliderFrame.Position = UDim2.new(0, 10, 0, 80)
+    SliderFrame.BackgroundTransparency = 1
+    SliderFrame.Parent = PopupFrame
+    
+    local fpsValues = {30, 60, 120, 240}
+    local currentFPS = 60
+    
+    for i, fps in ipairs(fpsValues) do
+        local FpsBtn = Instance.new("TextButton")
+        FpsBtn.Size = UDim2.new(0.2, -5, 1, 0)
+        FpsBtn.Position = UDim2.new(0.2 * (i-1), 0, 0, 0)
+        FpsBtn.BackgroundColor3 = fps == currentFPS and self.Themes[self.CurrentTheme].Accent or self.Themes[self.CurrentTheme].Button
+        FpsBtn.TextColor3 = self.Themes[self.CurrentTheme].Text
+        FpsBtn.Text = tostring(fps)
+        FpsBtn.TextSize = 12
+        FpsBtn.Font = Enum.Font.GothamBold
+        FpsBtn.BorderSizePixel = 0
+        FpsBtn.Parent = SliderFrame
+        
+        local Corner = Instance.new("UICorner")
+        Corner.CornerRadius = UDim.new(0, 4)
+        Corner.Parent = FpsBtn
+        
+        FpsBtn.MouseButton1Click:Connect(function()
+            currentFPS = fps
+            FPSLabel.Text = "FPS: " .. tostring(fps)
+            setfpscap(fps)
+            
+            -- Update button colors
+            for _, btn in ipairs(SliderFrame:GetChildren()) do
+                if btn:IsA("TextButton") then
+                    btn.BackgroundColor3 = tonumber(btn.Text) == fps and self.Themes[self.CurrentTheme].Accent or self.Themes[self.CurrentTheme].Button
+                end
+            end
+        end)
+    end
+    
+    -- Close Button
+    local CloseBtn = Instance.new("TextButton")
+    CloseBtn.Size = UDim2.new(1, -20, 0, 25)
+    CloseBtn.Position = UDim2.new(0, 10, 1, -35)
+    CloseBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+    CloseBtn.TextColor3 = self.Themes[self.CurrentTheme].Text
+    CloseBtn.Text = "Đóng"
+    CloseBtn.TextSize = 12
+    CloseBtn.Font = Enum.Font.GothamBold
+    CloseBtn.BorderSizePixel = 0
+    CloseBtn.Parent = PopupFrame
+    
+    local Corner2 = Instance.new("UICorner")
+    Corner2.CornerRadius = UDim.new(0, 4)
+    Corner2.Parent = CloseBtn
+    
+    CloseBtn.MouseButton1Click:Connect(function()
+        PopupGui:Destroy()
+    end)
+end
+
+-- ============ HELP TAB ============
+function CayThueUI:ShowHelpTab()
+    local ReadmeText = table.concat({
+        "📖 HƯỚNG DẪN SỬ DỤNG",
+        "",
+        "1) Chọn Tab Bên Trái",
+        "   • Chọn script bạn muốn chạy từ các tab khác nhau.",
+        "   • Mỗi tab chứa một nhóm script khác nhau.",
+        "",
+        "2) Thay Đổi Theme",
+        "   • Nhấn nút ⚙️ trong top bar để tùy chỉnh giao diện.",
+        "   • Có 5 theme sẵn: Dark, Light, Purple, Blue, Sunset.",
+        "",
+        "3) Rainbow Mode",
+        "   • Nhấn nút 🌈 để bật chế độ Rainbow.",
+        "   • Tăng độ sáng game.",
+        "   • Cho phép đi trên nước và lava mà không bị gì.",
+        "   • Hiển thị popup chỉnh FPS.",
+        "",
+        "4) Hop Server",
+        "   • Sử dụng tab 'Hop Server' để nhảy server.",
+        "   • Rejoin: Nhập lại server hiện tại.",
+        "   • Hop: Nhảy sang server khác.",
+        "   • Hop Ít Người: Tìm server có ít người.",
+        "",
+        "5) Info Tab",
+        "   • Xem thông tin thực tế hệ thống.",
+        "   • Ping, FPS, Game, Executor, Time, Date, Battery.",
+        "",
+        "6) Lưu Ý Quan Trọng",
+        "   • Cấu hình tự động được lưu.",
+        "   • Kéo thanh tiêu đề để di chuyển cửa sổ.",
+        "   • Sử dụng có trách nhiệm!",
+        "",
+        "📌 Made by Toilalode - Enhanced by Claude",
+    }, "\n")
+
+    local ReadmeLabel = Instance.new("TextLabel")
+    ReadmeLabel.Name = "ReadmeContent"
+    ReadmeLabel.Size = UDim2.new(1, 0, 1, 0)
+    ReadmeLabel.BackgroundTransparency = 1
+    ReadmeLabel.Text = ReadmeText
+    ReadmeLabel.TextColor3 = self.Themes[self.CurrentTheme].TextSecond
+    ReadmeLabel.TextSize = 12
+    ReadmeLabel.Font = Enum.Font.Gotham
+    ReadmeLabel.TextXAlignment = Enum.TextXAlignment.Left
+    ReadmeLabel.TextYAlignment = Enum.TextYAlignment.Top
+    ReadmeLabel.TextWrapped = true
+    ReadmeLabel.Parent = self.ContentArea
+end
+
+function CayThueUI:ShowHomeTab()
+    local WelcomeLabel = Instance.new("TextLabel")
+    WelcomeLabel.Name = "WelcomeLabel"
+    WelcomeLabel.Size = UDim2.new(1, 0, 0, 40)
+    WelcomeLabel.BackgroundTransparency = 1
+    WelcomeLabel.Text = "👋 Chào mừng đến Script Cày Thuê V3"
+    WelcomeLabel.TextColor3 = self.Themes[self.CurrentTheme].Text
+    WelcomeLabel.TextSize = 18
+    WelcomeLabel.Font = Enum.Font.GothamBold
+    WelcomeLabel.Parent = self.ContentArea
+    
+    local InfoLabel = Instance.new("TextLabel")
+    InfoLabel.Name = "InfoLabel"
+    InfoLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    InfoLabel.BackgroundTransparency = 1
+    InfoLabel.Text = "✨ Chế độ cày thuê tự động hoàn toàn\n\n🎨 5 Theme sẵn có\n🌈 Rainbow Mode\n📊 Info Tab chính xác\n💾 Tự động lưu cấu hình\n🌐 Hop Server chuyên nghiệp"
+    InfoLabel.TextColor3 = self.Themes[self.CurrentTheme].TextSecond
+    InfoLabel.TextSize = 13
+    InfoLabel.Font = Enum.Font.Gotham
+    InfoLabel.TextYAlignment = Enum.TextYAlignment.Top
+    InfoLabel.Position = UDim2.new(0, 0, 0, 50)
+    InfoLabel.Parent = self.ContentArea
+end
+
+function CayThueUI:ShowScriptsForTab(tabId)
+    for _, script in ipairs(self.Scripts) do
+        if script.tab == tabId then
+            self:CreateScriptButton(script)
+        end
+    end
+end
+
+-- ============ SCRIPT HANDLERS ============
+CayThueUI.ScriptHandlers = {
+    -- Tab Farm
+    ["Banana_Farm"] = function()
+        repeat wait() until game:IsLoaded() and game.Players.LocalPlayer 
+        getgenv().Key = "ede8802c507fc1533c8b3266" 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/main/BananaHub.lua"))()
+    end,
+    
+    ["OMG_Farm"] = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()
+    end,
+    
+    ["OMG_Farm_Old"] = function()
+        getgenv().Settings = {
+            JoinTeam = "Pirates",
+            Translator = false,
+        }
+        getgenv().Mode = "Old UI"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()
+    end,
+    
+    ["Night_Farm"] = function()
+        script_key = ""
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/BF-Beta.lua"))()
+    end,
+    
+    ["Maru_Farm"] = function()
+        getgenv().Key = "MARU-LR3VE-7E3XYS-ULL-8ETQE-QU9T1"
+        getgenv().id = "1389535008716230696"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/xshiba/MaruBitkub/main/Mobile.lua"))()
+    end,
+    
+    -- Tab Kaitun
+    ["Banana_Kaitun"] = function()
+        repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+        getgenv().Key = "ede8802c507fc1533c8b3266"
+        getgenv().SettingFarm = {
+            ["Hide UI"] = false,
+            ["Lock Fps"] = {["Enabled"] = true, ["FPS"] = 120},
+            ["Get Items"] = {["Saber"] = true, ["Godhuman"] = true, ["Skull Guitar"] = true},
+            ["Webhook"] = {["Enabled"] = true, ["WebhookUrl"] = ""}
+        }
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/main/BananaCat-kaitunBF.lua"))()
+    end,
+    
+    ["Maru_Kaitun"] = function()
+        getgenv().Key = "MARU-LR3VE-7E3XYS-ULL-8ETQE-QU9T1"
+        getgenv().id = "1389535008716230696"
+        getgenv().Script_Mode = "Kaitun_Script"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/xshiba/MaruBitkub/main/Mobile.lua"))()
+    end,
+    
+    ["OMG_Kaitun"] = function()
+        getgenv().SettingFarm = {
+            ["Team"] = "Pirates",
+            ["Lock Fps"] = {["Enabled"] = false, ["FPS"] = 10},
+        }
+        getgenv().Mode = "Kaitun"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()
+    end,
+    
+    -- Tab Bounty
+    ["Night_Bounty"] = function()
+        repeat wait() until game:IsLoaded()
+        getgenv().Config = {
+            ["Team"] = "Pirates",
+            ["Settings"] = {["Specator Target"] = true},
+        }
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/BF-Beta.lua"))()
+    end,
+    
+    ["Banana_Bounty_Ez"] = function()
+        repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+        getgenv().Key = "ede8802c507fc1533c8b3266"
+        getgenv().Setting = {
+            ["Team"] = "Pirate",
+            ["Webhook"] = {["Enabled"] = false, ["Url Webhook"] = ""},
+        }
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/BananaCat-BountyEz.lua"))()
+    end,
+    
+    ["Banana_Bounty_M1"] = function()
+        repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+        getgenv().Key = "ede8802c507fc1533c8b3266"
+        getgenv().config = {
+            team = "Pirates",
+            webhookEnable = false,
+            webhookurl = "",
+        }
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/Bountynew.lua"))()
+    end,
+    
+    -- Tab PvP
+    ["Banana_PvP"] = function()
+        repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+        getgenv().Key = "ede8802c507fc1533c8b3266"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/BloxFruitPVP.lua"))()
+    end,
+    
+    ["Onion_PvP"] = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/onion132005-bit/esponion.lua/refs/heads/main/onion13v9.lua", true))()
+    end,
+    
+    -- Tab V4
+    ["Banana_V4"] = function()
+        repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+        getgenv().Key = "ede8802c507fc1533c8b3266"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/BananaCat-KaitunV4"))()
+    end,
+    
+    ["Gat_Can"] = function()
+        getgenv().Config = {
+            Team = "Pirates",
+            Settings = {
+                ToolFarm = "Melee",
+                HopDelay = 2
+            }
+        }
+        loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/638cb8130072d62781731a34792acec1.lua"))()
+    end,
+    
+    -- Tab Fruit
+    ["Tim_Trai"] = function()
+        getgenv().Config = {
+            Team = "Pirates",
+            Settings = {
+                BlacklistFruits = {"Rocket Fruit", "Blade Fruit", "Smoke Fruit"},
+                WebhookStoreFruit = {
+                    Enabled = true,
+                    Url = ""
+                }
+            }
+        }
+        loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/290b11f6d622446241703db34703dea3.lua"))()
+    end,
+    
+    -- Tab Levi
+    ["Banana_Levi"] = function()
+        repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+        getgenv().Key = "ede8802c507fc1533c8b3266"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/BananaCat-KaitunLevi.lua"))()
+    end,
+    
+    -- Tab Khác
+    ["67_Hub"] = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/67HubDev/all/refs/heads/main/67hub.vn.lua"))()
+    end,
+    
+    ["Fix_Lag"] = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua"))()
+    end,
+    
+    -- Tab Hop Server
+    ["NightHub_HopSv"] = function()
+        getgenv().Team = "Pirates"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/HopScript.luau"))()
+    end,
+}
+
+function CayThueUI:RunScript(name, callbackId)
+    local handler = self.ScriptHandlers[callbackId]
+
+    if handler then
+        local ok, err = pcall(handler)
+        if ok then
+            self:ShowNotification("✅", name .. " đã chạy!", 2)
+        else
+            self:ShowNotification("⚠️", name .. " lỗi: " .. tostring(err), 3)
+        end
+    else
+        self:ShowNotification("ℹ️", name .. ": chưa gắn code", 3)
+    end
+end
+
+function CayThueUI:CreateScriptButton(script)
+    local ScriptBtn = Instance.new("TextButton")
+    ScriptBtn.Name = script.name
+    ScriptBtn.Size = UDim2.new(1, 0, 0, 45)
+    ScriptBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+    ScriptBtn.TextColor3 = self.Themes[self.CurrentTheme].Text
+    ScriptBtn.Text = "▶ " .. script.name
+    ScriptBtn.TextSize = 14
+    ScriptBtn.Font = Enum.Font.GothamBold
+    ScriptBtn.BorderSizePixel = 0
+    ScriptBtn.Parent = self.ContentArea
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 6)
+    Corner.Parent = ScriptBtn
+    
+    ScriptBtn.MouseEnter:Connect(function()
+        ScriptBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Button
+    end)
+    
+    ScriptBtn.MouseLeave:Connect(function()
+        ScriptBtn.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+    end)
+    
+    ScriptBtn.MouseButton1Click:Connect(function()
+        self:RunScript(script.name, script.callback)
+    end)
+end
+
+function CayThueUI:ShowNotification(icon, text, duration)
+    local NotifFrame = Instance.new("Frame")
+    NotifFrame.Name = "Notification"
+    NotifFrame.Size = UDim2.new(0, 300, 0, 50)
+    NotifFrame.Position = UDim2.new(1, -320, 0, 20 + #self.Notifications * 60)
+    NotifFrame.BackgroundColor3 = self.Themes[self.CurrentTheme].Secondary
+    NotifFrame.BorderSizePixel = 0
+    NotifFrame.Parent = self.ScreenGui
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 8)
+    Corner.Parent = NotifFrame
+    
+    local TextLabel = Instance.new("TextLabel")
+    TextLabel.Size = UDim2.new(1, -10, 1, 0)
+    TextLabel.Position = UDim2.new(0, 5, 0, 0)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.Text = icon .. " " .. text
+    TextLabel.TextColor3 = self.Themes[self.CurrentTheme].Text
+    TextLabel.TextSize = 12
+    TextLabel.Font = Enum.Font.Gotham
+    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TextLabel.Parent = NotifFrame
+    
+    table.insert(self.Notifications, NotifFrame)
+    
+    game:GetService("Debris"):AddItem(NotifFrame, duration)
+end
+
+function CayThueUI:MakeWindowDraggable()
+    local UserInputService = game:GetService("UserInputService")
+    local dragging = false
+    local dragStart = nil
+    local windowPos = nil
+    
+    self.MainFrame.InputBegan:Connect(function(input, gameProcessed)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            windowPos = self.MainFrame.Position
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input, gameProcessed)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            self.MainFrame.Position = windowPos + UDim2.new(0, delta.X, 0, delta.Y)
+        end
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input, gameProcessed)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+end
+
+function CayThueUI:UpdateStatsLoop()
+    local RunService = game:GetService("RunService")
+    local startTime = tick()
+    local frameCount = 0
+    
+    RunService.RenderStepped:Connect(function()
+        frameCount = frameCount + 1
+        local elapsed = tick() - startTime
+        
+        if elapsed >= 1 then
+            self.CurrentFPS = frameCount
+            frameCount = 0
+            startTime = tick()
+        end
+    end)
+end
+
+function CayThueUI:SaveConfig()
+    local config = {
+        Theme = self.CurrentTheme,
+        WindowPos = self.MainFrame.Position,
+    }
+    return config
+end
+
+function CayThueUI:LoadConfig()
+    return nil
+end
+
+-- ============ INITIALIZE ============
+CayThueUI:CreateUI()
+CayThueUI:SwitchTab("Home")
+
+return CayThueUI
