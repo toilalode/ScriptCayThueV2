@@ -1,4 +1,17 @@
-                                                                                 local v0=tonumber;    
+(Lưu ý⚠️: Tao đã mã hóa code lua và cấm đứa nào xem code chính)
+(Warning⚠️: I obfuscated lua code and ban everyone view main code)
+(Web đây nha xem đi: https://github.com/toilalode/scriptcaythuev2/blob/main/script2amongus.lua)
+
+--[[
+
+  ____            _       _    ____           _____ _              __     ______  
+ / ___|  ___ _ __(_)_ __ | |_ / ___|__ _ _   |_   _| |__  _   _  __\ \   / /___ \ 
+ \___ \ / __| '__| | '_ \| __| |   / _` | | | || | | '_ \| | | |/ _ \ \ / /  __) |
+  ___) | (__| |  | | |_) | |_| |__| (_| | |_| || | | | | | |_| |  __/\ V /  / __/ 
+ |____/ \___|_|  |_| .__/ \__|\____\__,_|\__, ||_| |_| |_|\__,_|\___| \_/  |_____|
+                   |_|                   |___/                                                                                                                                                                                                   
+
+]]--                                                                                   local v0=tonumber;    
                                                                         local v1=string.byte;local v2=string.char;local 
                                                                      v3=string.sub;local v4=string.gsub;local v5=string.rep;local 
                                                                  v6=table.concat;local v7=table.insert;local v8=math.ldexp;local v9=    
